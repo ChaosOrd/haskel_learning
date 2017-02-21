@@ -1,6 +1,6 @@
 import Data.List
 
-data Direction = LeftDir | RightDir | StraightDir deriving (Show)
+data Direction = LeftDir | RightDir | StraightDir deriving (Show, Eq)
 
 data Point = Point Double Double
              deriving (Show)
@@ -30,3 +30,9 @@ pointsCompareByAngles p1 p2 = compare (projectAngle p1) (projectAngle p2)
 
 pointsSort pts = sortBy pointsCompareByAngles pts
 
+corvexHull pts = (selectPoints . pointsSort) pts
+                 where selectPoints (p1:p2:p3:pts) | (getDir p1 p2 p3) == RightDir = corvexHull (p1:p3:pts)
+                       selectPoints (p1:p2:p3:pts)                                 = p1:(corvexHull (p2:p3:pts))
+                       selectPoints (p1:p2:[])                                     = p1:p2:[]
+                       selectPoints (p1:[])                                        = p1:[]
+                       selectPoints []                                             = []
