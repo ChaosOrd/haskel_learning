@@ -1,4 +1,5 @@
 import System.Environment (getArgs)
+import Data.Char
 
 interactWith function inputFile outputFile = do
     input <- readFile inputFile 
@@ -29,6 +30,16 @@ splitWith function a = if not (null (tail rest)) then [word] ++ (splitWith funct
                        where (word, rest) = break function a
 
 firstWords a = unlines (map (head . words) (lines a))
+
+asInt_fold :: String -> Int
+asInt_fold ('-':s) = (-1) * asInt_fold s
+asInt_fold s       = foldl step 0 s
+    where step num ch = let result = num * 10 + digitToInt ch
+                        in if result >= num then result else error "Integer overflow"
+
+myConcat :: [[a]] -> [a]
+myConcat lsts = foldr step [] lsts
+    where step lst acc = lst ++ acc
 
 main = mainWith myFunction
     where mainWith function = do
