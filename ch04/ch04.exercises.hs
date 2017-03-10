@@ -41,6 +41,23 @@ myConcat :: [[a]] -> [a]
 myConcat lsts = foldr step [] lsts
     where step lst acc = lst ++ acc
 
+myGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+myGroupBy eq lst = foldr step [] lst
+    where step x (acc:accs) | eq (head acc) x = (x:acc):accs
+                            | otherwise       = [x]:acc:accs
+          step x []                           = [[x]]
+
+myTakeWhileRecursion :: (a -> Bool) -> [a] -> [a]
+myTakeWhileRecursion func (x:xs) | func x    = x:(myTakeWhileRecursion func xs)
+                                 | otherwise = []
+myTakeWhileRecursion func []                 = []
+
+myTakeWhileFold :: (a -> Bool) -> [a] -> [a]
+myTakeWhileFold func lst = foldr step [] lst
+    where step x acc | func x    = x:acc
+                     | otherwise = []
+
+
 main = mainWith myFunction
     where mainWith function = do
             args <- getArgs
