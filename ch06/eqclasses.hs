@@ -1,3 +1,5 @@
+import Data.Char(isSpace)
+
 class BasicEq a where
   isEqual :: a -> a -> Bool
 
@@ -30,3 +32,14 @@ instance Show Color where
   show Red = "Red"
   show Green = "Green"
   show Blue = "Blue"
+
+instance Read Color where
+  readsPrec _ value =
+    tryParse [("Red", Red), ("Green", Green), ("Blue", Blue)]
+    where tryParse [] = []
+          tryParse ((attempt, result):xs) = 
+            if take (length attempt) trimmedValue == attempt
+                then [(result, drop (length attempt) trimmedValue)]
+                else tryParse xs
+            where trimmedValue = dropWhile isSpace value
+
